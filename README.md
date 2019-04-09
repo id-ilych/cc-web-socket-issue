@@ -1,2 +1,2 @@
-# hello-world
-Hello world new project template.
+# WebSocket issue
+Simple Cocos Creator project to reproduce `wss://` connection issue
