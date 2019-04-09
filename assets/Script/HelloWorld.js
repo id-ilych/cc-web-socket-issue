@@ -1,3 +1,10 @@
+let counter = 0;
+function nextId() {
+    const res = `[${counter}]`;
+    ++counter;
+    return res;
+}
+
 cc.Class({
     extends: cc.Component,
 
@@ -10,24 +17,42 @@ cc.Class({
 
     // use this for initialization
     onLoad: function () {
-        const ws = new WebSocket("wss://echo.websocket.org");
-        ws.onopen = (ev) => {
-            this.log("open: " + JSON.stringify(ev));
-            ws.send("ping");
-        };
-        ws.onmessage = (ev) => {
-            this.log("message: " + ev.data);
-        };
-        ws.onclose = (ev) => {
-            this.log("close: " + JSON.stringify(ev));
-        }
-        ws.onerror = (ev) => {
-            this.log("error: " + JSON.stringify(ev));
-        }
+        this.clearLog();
+        this.test("ws://echo.websocket.org")
+            .then(() => this.test("wss://echo.websocket.org"));
     },
 
     log: function (msg) {
         this.label.string += msg;
         this.label.string += "\n";
+    },
+
+    clearLog: function () {
+        this.label.string = "";
+    },
+
+    test: function (url) {
+        return new Promise((resolve, reject) => {
+            const id = nextId();
+            const ws = new WebSocket(url);
+            this.log(id + "new: " + url);
+            ws.onopen = (ev) => {
+                this.log(id + "open: " + JSON.stringify(ev));
+                ws.send("ping");
+            };
+            ws.onmessage = (ev) => {
+                this.log(id + "message: " + ev.data);
+                ws.close();
+                resolve();
+            };
+            ws.onclose = (ev) => {
+                this.log(id + "close: " + JSON.stringify(ev));
+                resolve();
+            }
+            ws.onerror = (ev) => {
+                this.log(id + "error: " + JSON.stringify(ev));
+                resolve();
+            }
+        });
     }
 });
