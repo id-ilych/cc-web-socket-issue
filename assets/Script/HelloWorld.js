@@ -6,17 +6,28 @@ cc.Class({
             default: null,
             type: cc.Label
         },
-        // defaults, set visually when attaching this script to the Canvas
-        text: 'Hello, World!'
     },
 
     // use this for initialization
     onLoad: function () {
-        this.label.string = this.text;
+        const ws = new WebSocket("wss://echo.websocket.org");
+        ws.onopen = (ev) => {
+            this.log("open: " + JSON.stringify(ev));
+            ws.send("ping");
+        };
+        ws.onmessage = (ev) => {
+            this.log("message: " + ev.data);
+        };
+        ws.onclose = (ev) => {
+            this.log("close: " + JSON.stringify(ev));
+        }
+        ws.onerror = (ev) => {
+            this.log("error: " + JSON.stringify(ev));
+        }
     },
 
-    // called every frame
-    update: function (dt) {
-
-    },
+    log: function (msg) {
+        this.label.string += msg;
+        this.label.string += "\n";
+    }
 });
