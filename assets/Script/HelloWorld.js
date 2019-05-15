@@ -34,7 +34,7 @@ cc.Class({
     test: function (url) {
         return new Promise((resolve, reject) => {
             const id = nextId();
-            const ws = new WebSocket(url, [], "ssl_cert.pem");
+            const ws = new WebSocket(url, [], "cacert.pem");
             this.log(id + "new: " + url);
             ws.onopen = (ev) => {
                 this.log(id + "open: " + JSON.stringify(ev));

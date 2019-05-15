@@ -128,9 +128,9 @@ android.applicationVariants.all { variant ->
         // have to rename to mitigate hash suffixces
         copy {
             from "${sourceDir}"
-            include "ssl_cert*.pem"
+            include "cacert*.pem"
             into outputDir
-            rename { return "ssl_cert.pem" }
+            rename { return "cacert.pem" }
         }
     }
 }
